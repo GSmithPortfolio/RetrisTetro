@@ -18,7 +18,7 @@ bool EventTriggered(double interval)
 
 int main()
 {
-	InitWindow(300, 600, "Tetro Minos");
+	InitWindow(500, 620, "Tetro Minos");
 	SetTargetFPS(60);
 
 	Color backgroundColour = { 44, 44, 127, 255 };
