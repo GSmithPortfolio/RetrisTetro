@@ -8,6 +8,24 @@ Game::Game()
 	currentBlock = GetRandomBlock();
 	nextBlock = GetRandomBlock();
 	gameOver = false;
+	score = 0;
+	font = LoadFontEx("Font/monogram.ttf", 64, 0, 0);
+	InitAudioDevice();
+	bgm = LoadMusicStream("Sounds/Space Fighter Loop.mp3");
+	PlayMusicStream(bgm);
+	SetMusicVolume(bgm, 0.1);
+	rotateSound = LoadSound("Sounds/rotate.wav");
+	clearSound = LoadSound("Sounds/clear.wav");
+	SetSoundVolume(rotateSound, 0.6);
+	SetSoundVolume(clearSound, 0.3);
+	intervalUpdatedRecently = false;
+}
+Game::~Game()
+{
+	UnloadSound(rotateSound);
+	UnloadSound(clearSound);
+	UnloadMusicStream(bgm);
+	CloseAudioDevice();
 }
 
 Block Game::GetRandomBlock()
@@ -31,10 +49,42 @@ std::vector<Block> Game::GetAllBlocks()
 
 void Game::Draw()
 {
+	DrawUI();
 	grid.Draw();
+	switch (nextBlock.id)
+	{
+	case 3:
+		nextBlock.Draw(255, 290);
+		break;
+	case 4:
+		nextBlock.Draw(255, 280);
+		break;
+	default:
+		nextBlock.Draw(270, 270);
+		break;
+	}
 	if (!gameOver)
 	{
-		currentBlock.Draw();
+		currentBlock.Draw(11, 11);
+	}
+}
+
+void Game::DrawUI()
+{
+	DrawTextEx(font, "Score", { 365, 15 }, 38, 2, WHITE);
+	DrawTextEx(font, "Next", { 370, 175 }, 38, 2, WHITE);
+	DrawRectangleRounded({ 320, 55, 170, 60 }, 0.3, 6, uiColour);
+
+	char scoreText[10];
+	sprintf_s(scoreText, "%d", score);
+	Vector2 textSize = MeasureTextEx(font, scoreText, 38, 2);
+
+	DrawTextEx(font, scoreText, { 320 + (170 - textSize.x) / 2, 65 }, 38, 2, WHITE);
+	DrawRectangleRounded({ 320, 215, 170, 180 }, 0.3, 6, uiColour);
+	if (gameOver)
+	{
+		DrawTextEx(font, "GAME OVER", { 320, 450 }, 38, 2, WHITE);
+		DrawTextEx(font, "ANY KEY TO RESTART", { 323, 490 }, 16, 2, WHITE);
 	}
 }
 
@@ -61,6 +111,10 @@ void Game::RotateBlock()
 		{
 			currentBlock.UndoRotation();
 		}
+		else
+		{
+			PlaySound(rotateSound);
+		}
 	}
 }
 
@@ -75,9 +129,15 @@ void Game::LockBlock()
 	if (BlockFits() == false)
 	{
 		gameOver = true;
+		SetMusicVolume(bgm, 0.05);
 	}
 	nextBlock = GetRandomBlock();
-	grid.ClearFullRows();
+	int rowsCleared = grid.ClearFullRows();
+	if (rowsCleared > 0)
+	{
+		PlaySound(clearSound);
+		UpdateScore(rowsCleared, 0);
+	}
 }
 
 bool Game::BlockFits()
@@ -99,6 +159,19 @@ void Game::Reset()
 	blocks = GetAllBlocks();
 	currentBlock = GetRandomBlock();
 	nextBlock = GetRandomBlock();
+	score = 0;
+}
+
+void Game::UpdateScore(int linesCleared, int moveDownPoints)
+{
+
+	if (linesCleared > 0)
+	{
+		score += 100 + (linesCleared - 1) * 200;
+	}
+
+	score += moveDownPoints;
+
 }
 
 void Game::HandleInput()
@@ -107,6 +180,7 @@ void Game::HandleInput()
 	if (gameOver && keyPressed != 0)
 	{
 		gameOver = false;
+		SetMusicVolume(bgm, 0.2);
 		Reset();
 	}
 	switch (keyPressed)
@@ -119,6 +193,7 @@ void Game::HandleInput()
 		break;
 	case KEY_DOWN:
 		MoveBlockDown();
+		UpdateScore(0, 1);
 		break;
 	case KEY_UP:
 		RotateBlock();
@@ -161,4 +236,24 @@ void Game::MoveBlockDown()
 			LockBlock();
 		}
 	}
+}
+
+int Game::UpdateInterval(int interIN)
+{
+	int oldScore = score;
+	int newInterval = interIN;
+
+	if (oldScore != score && score % 100 > oldScore % 100)
+	{
+		intervalUpdatedRecently = false;
+		oldScore = score;
+	}
+
+	if (!intervalUpdatedRecently)
+	{
+		newInterval -= 0.05;
+		intervalUpdatedRecently = true;
+		return newInterval;
+	}
+	return newInterval;
 }

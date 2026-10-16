@@ -1,8 +1,10 @@
 #include <raylib.h>
 #include "game.h"
+#include "colours.h"
+#include <iostream>
 
 double lastUpdateTime = 0;
-double currentInterval = 0.2;
+double currentInterval = 0.6;
 
 bool EventTriggered(double interval)
 {
@@ -21,12 +23,13 @@ int main()
 	InitWindow(500, 620, "Tetro Minos");
 	SetTargetFPS(60);
 
-	Color backgroundColour = { 44, 44, 127, 255 };
+	Font font = LoadFontEx("Font/monogram.ttf", 64, 0, 0);
 
 	Game tetGame = Game();
 
 	while (WindowShouldClose() == false)
 	{
+		UpdateMusicStream(tetGame.bgm);
 		tetGame.HandleInput();
 		if (EventTriggered(currentInterval))
 		{
@@ -35,6 +38,7 @@ int main()
 
 		BeginDrawing();
 		ClearBackground(backgroundColour);
+		
 		tetGame.Draw();
 
 		EndDrawing();
