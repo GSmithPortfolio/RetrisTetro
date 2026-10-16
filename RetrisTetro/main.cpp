@@ -1,7 +1,5 @@
-#include <iostream>
 #include <raylib.h>
-#include "grid.h"
-#include "blocks.cpp"
+#include "game.h"
 
 int main()
 {
@@ -10,18 +8,13 @@ int main()
 
 	Color backgroundColour = { 44, 44, 127, 255 };
 
-	Grid grid = Grid();
-	grid.Print();
-
-	TBlock block = TBlock();
-	block.Move(4, 3);
+	Game tetGame = Game();
 
 	while (WindowShouldClose() == false)
 	{
 		BeginDrawing();
 		ClearBackground(backgroundColour);
-		grid.Draw();
-		block.Draw();
+		tetGame.Draw();
 
 		EndDrawing();
 	}
