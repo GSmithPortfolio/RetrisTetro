@@ -13,9 +13,11 @@ Game::Game()
 	score = 0;
 	font = LoadFontEx("Font/monogram.ttf", 64, 0, 0);
 	InitAudioDevice();
+	// Music from Kevin MacLeod on incompetech.com
 	bgm = LoadMusicStream("Sounds/Space Fighter Loop.mp3");
 	PlayMusicStream(bgm);
 	SetMusicVolume(bgm, 0.1);
+	// Sound effects created using free tool jsfxr on sfxr.me
 	rotateSound = LoadSound("Sounds/rotate.wav");
 	clearSound = LoadSound("Sounds/clear.wav");
 	SetSoundVolume(rotateSound, 0.6);
