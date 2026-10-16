@@ -14,6 +14,7 @@ int main()
 	grid.Print();
 
 	TBlock block = TBlock();
+	block.Move(4, 3);
 
 	while (WindowShouldClose() == false)
 	{
