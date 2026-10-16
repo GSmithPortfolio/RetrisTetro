@@ -8,6 +8,10 @@ public:
 	Game();
 	Block GetRandomBlock();
 	std::vector<Block> GetAllBlocks();
+	void HandleInput();
+	void MoveBlockLeft();
+	void MoveBlockRight();
+	void MoveBlockDown();
 	void Draw();
 	Grid grid;
 
@@ -16,3 +20,5 @@ private:
 	Block currentBlock;
 	Block nextBlock;
 };
+
+

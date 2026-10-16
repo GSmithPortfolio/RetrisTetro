@@ -12,6 +12,8 @@ int main()
 
 	while (WindowShouldClose() == false)
 	{
+		tetGame.HandleInput();
+
 		BeginDrawing();
 		ClearBackground(backgroundColour);
 		tetGame.Draw();
