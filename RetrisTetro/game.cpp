@@ -1,6 +1,8 @@
 #include "game.h"
 #include <random>
 
+// Constructor, initialising all the default values of the variables required by the game's logic.
+// Includes grid objects, vector containing the blocks available, the score, the font, music and sound effects.
 Game::Game()
 {
 	grid = Grid();
@@ -18,11 +20,11 @@ Game::Game()
 	clearSound = LoadSound("Sounds/clear.wav");
 	SetSoundVolume(rotateSound, 0.6);
 	SetSoundVolume(clearSound, 0.3);
-	intervalUpdatedRecently = false;
 
 	currentInterval = 0.6;
 	previousScoreUpdated = 0;
 }
+// Destructor, unloading sounds, music and audio device to play them.
 Game::~Game()
 {
 	UnloadSound(rotateSound);
@@ -31,6 +33,8 @@ Game::~Game()
 	CloseAudioDevice();
 }
 
+// Method to pull a random block from the list of available blocks, refilling the list if it is empty.
+// This allows the game to cycle through each type of block at least once before repeating.
 Block Game::GetRandomBlock()
 {
 	if (blocks.empty())
@@ -45,11 +49,15 @@ Block Game::GetRandomBlock()
 	return block;
 }
 
+// Method to return a vector filled with one of each type of block available in the game.
 std::vector<Block> Game::GetAllBlocks()
 {
 	return { IBlock(), JBlock(), LBlock(), OBlock(), SBlock(), TBlock(), ZBlock() };
 }
 
+// Method to draw the various game objects on the raylib window.
+// Includes the method to draw the UI elements, the grid, as well as drawing the next available block centered in the next box.
+// Also stops drawing the current block if the game is over, preventing overlaying a non-controllable block on the stack that lost the game.
 void Game::Draw()
 {
 	DrawUI();
@@ -72,6 +80,9 @@ void Game::Draw()
 	}
 }
 
+// Method to draw the game's UI elements.
+// Draws text labelling and displaying the score, as well as the Next Block box.
+// Also draws the game over text and instructions to restart if the game is over.
 void Game::DrawUI()
 {
 	DrawTextEx(font, "Score", { 365, 15 }, 38, 2, WHITE);
@@ -91,6 +102,7 @@ void Game::DrawUI()
 	}
 }
 
+// Method to check if a block is outside of the bounds of the grid, for game logic purposes.
 bool Game::IsBlockOutside()
 {
 	std::vector<Position> tiles = currentBlock.GetCellPositions();
@@ -105,6 +117,9 @@ bool Game::IsBlockOutside()
 	return false;
 }
 
+// Method to rotate the current controllable block.
+// If the block would rotate to an invalid position, the rotation is reversed.
+// Also plays the rotation sound.
 void Game::RotateBlock()
 {
 	if (!gameOver)
@@ -121,6 +136,8 @@ void Game::RotateBlock()
 	}
 }
 
+// Method to lock a block in place, once it has reached the bottom of the play field or any already-locked blocks.
+// Also contains the logic to trigger the game over state, as well as clearing full rows and updating the game's score if they are.
 void Game::LockBlock()
 {
 	std::vector<Position> tiles = currentBlock.GetCellPositions();
@@ -143,6 +160,7 @@ void Game::LockBlock()
 	}
 }
 
+// Method to check whether or not a block will fit in its next position, for use in various pieces of game logic.
 bool Game::BlockFits()
 {
 	std::vector<Position> tiles = currentBlock.GetCellPositions();
@@ -156,6 +174,8 @@ bool Game::BlockFits()
 	return true;
 }
 
+// Method to reset all relevant game elements to their starting functions, used once the game over state is aborted.
+// Resets score, grid, available blocks, current and next blocks, as well as game speed.
 void Game::Reset()
 {
 	grid.Initialize();
@@ -167,6 +187,8 @@ void Game::Reset()
 	previousScoreUpdated = 0;
 }
 
+// Method to update the score, using arguments passed in.
+// Used when clearing rows, and when using the down arrow key to move the block faster.
 void Game::UpdateScore(int linesCleared, int moveDownPoints)
 {
 
@@ -179,15 +201,19 @@ void Game::UpdateScore(int linesCleared, int moveDownPoints)
 
 }
 
+// Method to handle the keyboard inputs.
 void Game::HandleInput()
 {
 	int keyPressed = GetKeyPressed();
+	// Resets the game, when the game is in the game over state and any key is pressed.
+	// Sets music to normal volume and calls the method to reset game objects.
 	if (gameOver && keyPressed != 0)
 	{
 		gameOver = false;
 		SetMusicVolume(bgm, 0.2);
 		Reset();
 	}
+	// Switch statement detects which key has been pressed, calling the relevant methods.
 	switch (keyPressed)
 	{
 	case KEY_LEFT:
@@ -206,6 +232,7 @@ void Game::HandleInput()
 	}
 }
 
+// Method to move the block left, checking for collisions with the edge of the grid and any frozen blocks.
 void Game::MoveBlockLeft()
 {
 	if (!gameOver)
@@ -218,6 +245,7 @@ void Game::MoveBlockLeft()
 	}
 }
 
+// Method to move the block right, checking for collisions with the edge of the grid and any frozen blocks.
 void Game::MoveBlockRight()
 {
 	if (!gameOver)
@@ -230,6 +258,7 @@ void Game::MoveBlockRight()
 	}
 }
 
+// Method to move the block down, checking for collisions with the edge of the grid and any frozen blocks.
 void Game::MoveBlockDown()
 {
 	if (!gameOver)

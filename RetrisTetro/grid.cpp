@@ -2,6 +2,7 @@
 #include <iostream>
 #include "colours.h"
 
+// Constructor
 Grid::Grid()
 {
 	numOfRows = 20;
@@ -11,6 +12,7 @@ Grid::Grid()
 	colours = GetCellColours();
 }
 
+// Method to set each cell on the grid to a value of 0, creating an empty playing field.
 void Grid::Initialize()
 {
 	for (int row = 0; row < numOfRows; row++)
@@ -22,6 +24,7 @@ void Grid::Initialize()
 	}
 }
 
+// Method originally for testing the grid, which prints the current configuration to the console.
 void Grid::Print()
 {
 	for (int row = 0; row < numOfRows; row++)
@@ -34,6 +37,7 @@ void Grid::Print()
 	}
 }
 
+// Method to draw the elements on the grid to the raylib window, allowing the user to see it.
 void Grid::Draw()
 {
 	for (int row = 0; row < numOfRows; row++)
@@ -47,6 +51,7 @@ void Grid::Draw()
 
 }
 
+// Method to check whether or not a cell is attempting to exist outside of the grid, for game logic purposes.
 bool Grid::IsCellOutside(int row, int column)
 {
 	if (row >= 0 && row < numOfRows && column >= 0 && column < numOfCols)
@@ -56,6 +61,7 @@ bool Grid::IsCellOutside(int row, int column)
 	return true;
 }
 
+// Method to check whether or not a cell is empty, for game logic purposes.
 bool Grid::IsCellEmpty(int row, int column)
 {
 	if (grid[row][column] == 0)
@@ -65,6 +71,7 @@ bool Grid::IsCellEmpty(int row, int column)
 	return false;
 }
 
+// Method to clear rows on the grid that become full, incrementing a variable called completed and calling the method to move rows down.
 int Grid::ClearFullRows()
 {
 	int completed = 0;
@@ -83,6 +90,7 @@ int Grid::ClearFullRows()
 	return completed;
 }
 
+// Method to check whether or not a row is full, for game logic purposes.
 bool Grid::IsRowFull(int row)
 {
 	for (int column = 0; column < numOfCols; column++)
@@ -94,7 +102,8 @@ bool Grid::IsRowFull(int row)
 	}
 	return true;
 }
-
+ 
+// Method to clear a row on the grid, replacing all cells with empty ones.
 void Grid::ClearRow(int row)
 {
 	for (int column = 0; column < numOfCols; column++)
@@ -103,6 +112,7 @@ void Grid::ClearRow(int row)
 	}
 }
 
+// Method to move rows down according to the argument numRows, used when clearing full rows.
 void Grid::MoveRowDown(int row, int numRows)
 {
 	for (int column = 0; column < numOfCols; column++)

@@ -1,5 +1,6 @@
 #include "block.h"
 
+// Constructor.
 Block::Block()
 {
 	id = 0;
@@ -10,6 +11,7 @@ Block::Block()
 	columnOffset = 0;
 }
 
+// Method to draw the block to the raylib window, allowing the player to see them.
 void Block::Draw(int offsetX, int offsetY)
 {
 	std::vector<Position> tiles = GetCellPositions();
@@ -19,12 +21,14 @@ void Block::Draw(int offsetX, int offsetY)
 	}
 }
 
+// Method to offset the block by the arguments being passed in, allowing the blocks to move around.
 void Block::Move(int rows, int columns)
 {
 	rowOffset += rows;
 	columnOffset += columns;
 }
 
+// Method for cycling through the different rotation states of each block.
 void Block::Rotate()
 {
 	rotationState++;
@@ -35,6 +39,7 @@ void Block::Rotate()
 	}
 }
 
+// Method to cancel a rotation, if it would result in an invalid block position.
 void Block::UndoRotation()
 {
 	rotationState--;
@@ -45,6 +50,7 @@ void Block::UndoRotation()
 	}
 }
 
+// Method to fill a vector of positions, to get the filled cells for game logic purposes.
 std::vector<Position> Block::GetCellPositions()
 {
 	std::vector<Position> tiles = cells[rotationState];

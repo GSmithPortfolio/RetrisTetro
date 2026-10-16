@@ -15,7 +15,6 @@ public:
 	int score;
 	double currentInterval;
 	int previousScoreUpdated;
-	bool intervalUpdatedRecently;
 	bool gameOver;
 	Music bgm;
 

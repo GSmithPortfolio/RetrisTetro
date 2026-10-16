@@ -1,6 +1,9 @@
 #include "block.h"
 #include "position.h"
 
+// Creating child classes for each type of tetromino used in the game.
+// This allows each type to have their own id, rotation states and starting offset.
+
 class LBlock :public Block
 {
 public:
