@@ -11,8 +11,10 @@ public:
 	void HandleInput();
 	void MoveBlockDown();
 	void Draw();
-	int UpdateInterval(int interIN);
-
+	
+	int score;
+	double currentInterval;
+	int previousScoreUpdated;
 	bool intervalUpdatedRecently;
 	bool gameOver;
 	Music bgm;
@@ -35,7 +37,6 @@ private:
 	Block currentBlock;
 	Block nextBlock;
 	Font font;
-	int score;
 	Sound rotateSound;
 	Sound clearSound;
 };

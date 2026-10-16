@@ -19,6 +19,9 @@ Game::Game()
 	SetSoundVolume(rotateSound, 0.6);
 	SetSoundVolume(clearSound, 0.3);
 	intervalUpdatedRecently = false;
+
+	currentInterval = 0.6;
+	previousScoreUpdated = 0;
 }
 Game::~Game()
 {
@@ -160,6 +163,8 @@ void Game::Reset()
 	currentBlock = GetRandomBlock();
 	nextBlock = GetRandomBlock();
 	score = 0;
+	currentInterval = 0.6;
+	previousScoreUpdated = 0;
 }
 
 void Game::UpdateScore(int linesCleared, int moveDownPoints)
@@ -236,24 +241,4 @@ void Game::MoveBlockDown()
 			LockBlock();
 		}
 	}
-}
-
-int Game::UpdateInterval(int interIN)
-{
-	int oldScore = score;
-	int newInterval = interIN;
-
-	if (oldScore != score && score % 100 > oldScore % 100)
-	{
-		intervalUpdatedRecently = false;
-		oldScore = score;
-	}
-
-	if (!intervalUpdatedRecently)
-	{
-		newInterval -= 0.05;
-		intervalUpdatedRecently = true;
-		return newInterval;
-	}
-	return newInterval;
 }

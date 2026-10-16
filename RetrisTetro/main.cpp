@@ -4,7 +4,7 @@
 #include <iostream>
 
 double lastUpdateTime = 0;
-double currentInterval = 0.6;
+
 
 bool EventTriggered(double interval)
 {
@@ -31,9 +31,14 @@ int main()
 	{
 		UpdateMusicStream(tetGame.bgm);
 		tetGame.HandleInput();
-		if (EventTriggered(currentInterval))
+		if (EventTriggered(tetGame.currentInterval))
 		{
 			tetGame.MoveBlockDown();
+		}
+		if (tetGame.score != tetGame.previousScoreUpdated)
+		{
+			tetGame.currentInterval = 0.6 - (0.05 * floor(tetGame.score / 100));
+			tetGame.previousScoreUpdated = tetGame.score;
 		}
 
 		BeginDrawing();
